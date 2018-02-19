@@ -1,0 +1,16 @@
+from pyo import *
+pm_list_devices()
+s = Server()
+s.setMidiInputDevice(3)
+s.boot()
+s.start()
+notes = Notein(poly=10, scale=1, mul=.5)
+print(notes)
+bend = Bendin(brange=2, scale=1)
+p = Port(notes['velocity'], .001, .5)
+b = Sine(freq=notes['pitch'] * bend, mul=p)
+c = Sine(freq=notes['pitch'] * bend * 0.997, mul=p)
+d = Sine(freq=notes['pitch'] * bend * 1.005, mul=p).out()
+#pan = Pan(b, outs=2, pan=0.50, spread=0.50, mul=1, add=0)
+
+s.gui(locals())
