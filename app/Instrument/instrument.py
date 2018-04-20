@@ -50,25 +50,78 @@ class Synth:
         self.out.stop()
     def resume(self):
         self.out.out()
-    def addEffect(self,eff,name):
-        if eff == "Disto":
-            self.pause()
-            if(len(self.effectOrder)==0):
-                self.effects[name]=effect.Disto_(self.out.sig)
-            else:
-                self.effects[name]=effect.Disto_(self.effects[self.effectOrder[len(self.effectOrder)-1]].effect)
+    def addEffect(self,eff,name,pos):
+        print(name)
+        self.pause()
+        if(len(self.effectOrder)==0):#empty
+            self.effects[name]=self.setEffect(eff,self.out.sig)                
             self.effectOrder.append(name)
             self.out = self.effects[name].out()
-            self.resume()
-    def removeEffect(self,index):
-        self.ports.pop(index)
-        self.midiCtls.pop(index)
-        ctl.extend(usedCtl.pop(index))
-        self.effect.pop(index)
-        if (len(self.effect)==0):
+        elif(len(self.effectOrder)==pos):#add last
+            self.effects[name]=self.setEffect(eff,self.effects[self.effectOrder[len(self.effectOrder)-1]].effect)                
+            self.effectOrder.append(name)
+            self.out = self.effects[name].out()
+        elif(pos==0):#add first
+            self.effects[name]=self.setEffect(eff,self.instrument.sig)         
+            self.effectOrder.insert(pos,name)
+            self.effects[self.effectOrder[pos+1]].effect.setInput(self.effects[name].effect)   
+            self.out = self.effects[self.effectOrder[len(self.effectOrder)-1]].out()
+        elif(pos > 0 and pos < len(self.effectOrder)):
+            self.effects[name]=self.setEffect(eff,self.effects[self.effectOrder[pos-1]].effect)          
+            self.effectOrder.insert(pos,name)
+            self.effects[self.effectOrder[pos+1]].effect.setInput(self.effects[name].effect)  
+            self.out = self.effects[self.effectOrder[len(self.effectOrder)-1]].out()
+        self.resume()
+
+
+    def setEffect(self,name,input):
+        if(name=="Disto"):
+            return effect.Disto_(input)
+        elif(name=="Delay"):
+            return effect.Delay_(input)
+        if(name=="SDelay"):
+            return effect.SDelay_(input)
+        elif(name=="Delay1"):
+            return effect.Delay1_(input)
+        if(name=="Waveguide"):
+            return effect.Waveguide_(input)
+        if(name=="AllpassWG"):
+            return effect.AllpassWG_(input)
+        elif(name=="Freeverb"):
+            return effect.Freeverb_(input)
+        if(name=="WGVerb"):
+            return effect.WGVerb_(input)
+        elif(name=="Chorus"):
+            return effect.Chorus_(input)
+        if(name=="Harmonizer"):
+            return effect.Harmonizer_(input)
+        if(name=="FreqShift"):
+            return effect.FreqShift_(input)
+        elif(name=="STRev"):
+            return effect.STRev_(input)
+        elif(name=="SmoothDelay"):
+            return effect.SmoothDelay_(input)
+        
+    def removeEffect(self,name):
+        index = self.effectOrder.index(name)
+        self.pause()
+        if(len(self.effectOrder)==1):#alone
+            self.effects={}              
+            self.effectOrder=[]
             self.out = self.instrument
-        else :
-            self.out = self.effect[len(self.effect)-1]
+        elif(len(self.effectOrder)-1==index):#removeLast
+            self.out = self.effects[self.effectOrder[index-1]].out()
+            self.effects.pop(name)                
+            self.effectOrder.remove(name)
+        elif(index==0):#remove first
+            self.effects[self.effectOrder[index+1]].effect.setInput(self.instrument.sig)
+            self.effects.pop(name)                
+            self.effectOrder.remove(name)
+        elif(pos > 0 and pos < len(self.effectOrder)):
+            self.effects[self.effectOrder[index+1]].effect.setInput(self.effects[self.effectOrder[index-1]].effect)  
+            self.effects.pop(name)                
+            self.effectOrder.remove(name)
+        self.resume()
     def changeInstrument(self,instrument):
         print(instrument)
         self.pause()
@@ -81,7 +134,7 @@ class Synth:
         elif (instrument == 'sinein'):
             self.instrument = Sinein(self.note , transpo = self.lf * self.bend, amp=self.amp)
             if (len(self.effectOrder)!= 0):
-                self.effect[self.effectOrder[0]].setInput = self.instrument.sig
+                self.effects[self.effectOrder[0]].setInput = self.instrument.sig
             else:
                 self.out=self.instrument
         self.resume()

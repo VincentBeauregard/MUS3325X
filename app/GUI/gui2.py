@@ -12,7 +12,32 @@ import gettext
 
 # begin wxGlade: extracode
 # end wxGlade
+effectList = [  ("Disto"),
+                ("Delay"),
+                ("SDelay"),
+                ("Delay1"),
+                ("Waveguide"),
+                ("AllpassWG"),
+                ("Freeverb"),
+                ("WGVerb"),
+                ("Chorus"),
+                ("Harmonizer"),
+                ("FreqShift"),
+                ("STRev"),
+                ("SmoothDelay")
+            ]
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 class MyFrame(wx.Frame):
     def __init__(self,synth, *args, **kwds):
@@ -45,7 +70,7 @@ class MyFrame(wx.Frame):
         self.slider_7 = wx.Slider(self, wx.ID_ANY, 0, 0, 10)
         self.checkbox_6 = wx.CheckBox(self, wx.ID_ANY, _("checkbox_6"))
         self.combo_box_7 = wx.ComboBox(self, wx.ID_ANY, choices=[], style=wx.CB_DROPDOWN)
-        self.effectSelectBox = wx.ComboBox(self, wx.ID_ANY, choices=[_("Disto")], style=wx.CB_DROPDOWN)
+        self.effectSelectBox = wx.ComboBox(self, wx.ID_ANY, choices=effectList, style=wx.CB_DROPDOWN)
         self.addEffectFirst_btn = wx.Button(self, wx.ID_ANY, _("AddFirst"))
         self.addEffectLast_btn = wx.Button(self, wx.ID_ANY, _("AddLast"))
         self.addEffectIndex_btn = wx.Button(self, wx.ID_ANY, _("AddAtIndex"))
@@ -141,6 +166,7 @@ class MyFrame(wx.Frame):
         self.slideEffect = [0,0,0,0,0,0,0,0]
         self.synth=synth
         self.ctl=synth.getCtl()[:]
+        self.indexSpin.SetRange(0,0)
         for i in range(8):
             self.effectSlider[i].Enable(False) 
             self.effectInputBox[i].Enable(False) 
@@ -419,10 +445,16 @@ class MyFrame(wx.Frame):
         event.Skip()
 
     def addeffectfirst(self, event):  # wxGlade: MyFrame.<event_handler>
-        print "Event handler 'addeffectfirst' not implemented!"
+        self.addEffect(0)
         event.Skip()
 
     def addeffectlast(self, event):  # wxGlade: MyFrame.<event_handler>
+        self.addEffect(len(self.synth.effectOrder))
+        
+    def addeffectAtIndex(self, event):  # wxGlade: MyFrame.<event_handler>
+        self.addEffect(int(self.indexSpin.GetValue()))
+        event.Skip()
+    def addEffect(self,pos):
         if(self.effectSelectBox.GetSelection() != -1):
             print(self.effectName.GetValue())
             added=False
@@ -437,14 +469,14 @@ class MyFrame(wx.Frame):
                 else:
                     self.effect.append(tmp)
                     added = True
-            self.myEffectBox.Append(txt+str(index))
-            self.synth.addEffect("Disto",txt+str(index))
+            self.synth.addEffect(self.effectSelectBox.GetValue(),txt+str(index),pos)
             txt=self.effectName.SetValue("")
             self.effectSelectBox.SetValue("")
+            self.myEffectBox.Clear()
+            self.indexSpin.SetRange(0,len(self.synth.effectOrder))
+            for i in self.synth.effectOrder:
+                self.myEffectBox.Append(i)
 
-    def addeffectAtIndex(self, event):  # wxGlade: MyFrame.<event_handler>
-        print "Event handler 'addeffectAtIndex' not implemented!"
-        event.Skip()
 
     def selectedEffect(self, event):  # wxGlade: MyFrame.<event_handler>
         self.refreshCtl()
@@ -513,7 +545,7 @@ class MyFrame(wx.Frame):
             if(self.effectInputBox[x].GetSelection() is not -1):
                 self.synth.useCtl(int(self.effectInputBox[x].GetValue()),self.parametre[self.inputs[x]][2],self.parametre[self.inputs[x]][3],self.parametre[self.inputs[x]][0])
                 self.synth.useCtl
-                self.effectSlider[0].Enable(False)
+                self.effectSlider[x].Enable(False)
                 self.slideEffect[x][4]=int(self.effectInputBox[x].GetValue())
             else:
                 self.effectRadio[x].SetValue(False)
@@ -560,8 +592,18 @@ class MyFrame(wx.Frame):
         event.Skip()
 
     def removeEffec(self, event):  # wxGlade: MyFrame.<event_handler>
-        print "Event handler 'removeEffec' not implemented!"
+        if(self.myEffectBox.GetSelection() is not -1):
+            self.synth.removeEffect(self.myEffectBox.GetValue())
+            self.myEffectBox.SetValue("")
+            self.resetEnable()
+            self.myEffectBox.Clear()
+            self.indexSpin.SetRange(0,len(self.synth.effectOrder))
+            for i in self.synth.effectOrder:
+                self.myEffectBox.Append(i)
+            self.myEffectBox.SetValue("")
+            
         event.Skip()
+        
     def refreshCtl(self):
         ctl = self.synth.getCtl()
         print(self.ctl)
@@ -570,6 +612,7 @@ class MyFrame(wx.Frame):
             for j in self.ctl:
                 if(j in ctl):
                     self.effectInputBox[i].Append(str(j))
+        
     def resetEnable(self):
         for i in range(8):
             self.effectSlider[i].Enable(False) 
