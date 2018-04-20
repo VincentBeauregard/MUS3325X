@@ -25,53 +25,80 @@ class Synth:
         self.lf = Sine(freq=5, mul=self.ctl, add=1) # Vibrato
         self.vol = Midictl(ctlnumber=7, minscale=0, maxscale=2)
         self.amp = Port(self.vol, .02)
-        self.a1 = Sinein(self.note , transpo = self.lf * self.bend, amp=self.amp)
+        self.instrument = Defaut(self.note , transpo = self.lf * self.bend, amp=self.amp)
         self.a = pyo.CtlScan2(self.ctl_scan)
         self.a.setFunction(ctl_scan)
-        self.effect = [self.a1]
-        self.midiCtls = [[self.vol]]
-        self.ports = [[self.amp]]
-        self.out = self.effect[len(self.effect)-1].out()
+        self.effects = {}
+        self.effectOrder = []
+        self.midiCtls = {}
+        self.ports = {}
+        self.out = self.instrument
     def ctl_scan(ctlnum):
         print("test")
-    def start(self):
-        self.out.out()
+    def start(self,instrument):
         s.start()
+        self.out.out()
     def stop(self):
+        self.effects = {}
+        self.effectOrder = []
+        self.out=self.instrument
         self.out.stop()
+        
     def exit(self):
         s.stop()
-    def resetCtl():
-        ctl=[]
-    def addEffect(self,eff):
+    def pause(self):
+        self.out.stop()
+    def resume(self):
+        self.out.out()
+    def addEffect(self,eff,name):
         if eff == "Disto":
-            popped = 0
-            if(len(ctl)>=3):
-                popped1=ctl.pop(0)
-                popped2=ctl.pop(0)
-                popped3=ctl.pop(0)
-                usedCtl.append([popped1,popped2,popped3])
-                self.midiCtls.append([Midictl(ctlnumber=popped1, minscale=0, maxscale=1),
-                                      Midictl(ctlnumber=popped2, minscale=0, maxscale=1),
-                                      Midictl(ctlnumber=popped3, minscale=0, maxscale=1)])
-                self.ports.append([Port(self.midiCtls[len(self.midiCtls)-1][0], .02),
-                                   Port(self.midiCtls[len(self.midiCtls)-1][1], .02),
-                                   Port(self.midiCtls[len(self.midiCtls)-1][2], .02)])
-                self.stop()
-                tmp = self.effect[len(self.effect)-1].sig
-                tmp = effect.Disto_(tmp, self.ports[len(self.ports)-1])
-                self.effect.append(tmp)
-                self.out = self.effect[len(self.effect)-1].out()
-                self.start()
+            self.pause()
+            if(len(self.effectOrder)==0):
+                self.effects[name]=effect.Disto_(self.out.sig)
+            else:
+                self.effects[name]=effect.Disto_(self.effects[self.effectOrder[len(self.effectOrder)-1]].effect)
+            self.effectOrder.append(name)
+            self.out = self.effects[name].out()
+            self.resume()
     def removeEffect(self,index):
         self.ports.pop(index)
         self.midiCtls.pop(index)
         ctl.extend(usedCtl.pop(index))
         self.effect.pop(index)
-        self.out = self.effect[len(self.effect)-1].out()
-
+        if (len(self.effect)==0):
+            self.out = self.instrument
+        else :
+            self.out = self.effect[len(self.effect)-1]
+    def changeInstrument(self,instrument):
+        print(instrument)
+        self.pause()
+        if(instrument == "defaut"): 
+            self.instrument = Defaut(self.note , transpo = self.lf * self.bend, amp=self.amp)
+            if (len(self.effectOrder)!= 0):
+                self.effects[self.effectOrder[0]].setInput = self.instrument.sig
+            else:
+                self.out=self.instrument
+        elif (instrument == 'sinein'):
+            self.instrument = Sinein(self.note , transpo = self.lf * self.bend, amp=self.amp)
+            if (len(self.effectOrder)!= 0):
+                self.effect[self.effectOrder[0]].setInput = self.instrument.sig
+            else:
+                self.out=self.instrument
+        self.resume()
         
-        
+    def getCtl(self):
+        return ctl
+    def useCtl(self,index,min,max,fn):
+        self.midiCtls[index]=Midictl(ctlnumber=index, minscale=min, maxscale=max)
+        self.ports[index]=Port(self.midiCtls[index], .02)
+        fn(self.ports[index])
+        ctl.remove(index)
+        usedCtl.append(index)
+    def freeCtl(self,index):
+        self.ports.pop(index)
+        self.midiCtls.pop(index)
+        ctl.append(index)
+        usedCtl.remove(index)
             
         
 class Instrument():

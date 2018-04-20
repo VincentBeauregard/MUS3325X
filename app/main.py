@@ -15,9 +15,9 @@ sys.path.insert(0, sys.path[0]+'/GUI')
 sys.path.insert(0, sys.path[1]+'/Instrument')
 sys.path.insert(0, sys.path[2]+'/Effect')
 import effect
-import gui
+import gui2
 import instrument
 
 a = instrument.Synth(0)
-gui.run(a)
+gui2.run(a)
 a.exit()

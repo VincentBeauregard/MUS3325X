@@ -19,10 +19,10 @@ class MyFrame2(wx.Frame):
         # begin wxGlade: MyFrame2.__init__
         wx.Frame.__init__(self, *args, **kwds)
         self.label_1 = wx.StaticText(self, wx.ID_ANY, _("Select instrument"))
-        self.combo_box_1 = wx.ComboBox(self, wx.ID_ANY, choices=[_("test1"), _("test2")], style=wx.CB_DROPDOWN)
-        self.button_2 = wx.Button(self, wx.ID_ANY, _("effect1"))
-        self.button_3 = wx.Button(self, wx.ID_ANY, _("effect2"))
-        self.button_1 = wx.Button(self, wx.ID_ANY, _("test"))
+        self.combo_box_1 = wx.ComboBox(self, wx.ID_ANY, choices=[_("defaut"), _("sinein")], style=wx.CB_DROPDOWN)
+        self.button_2 = wx.Button(self, wx.ID_ANY, _("add effect"))
+        self.button_3 = wx.Button(self, wx.ID_ANY, _("remove effect"))
+        self.button_1 = wx.Button(self, wx.ID_ANY, _("Run"))
 
         self.__set_properties()
         self.__do_layout()
@@ -32,7 +32,7 @@ class MyFrame2(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.start, self.button_1)
         # end wxGlade
         self.activated=False
-        self.effect=[False]
+        self.effect=[]
         self.synth=synth
     def __set_properties(self):
         # begin wxGlade: MyFrame2.__set_properties
@@ -58,23 +58,28 @@ class MyFrame2(wx.Frame):
         # end wxGlade    
     def start(self, event):  # wxGlade: MyFrame2.<event_handler>
         if not self.activated:
-            self.synth.start()
+            self.synth.start(self.combo_box_1.GetStringSelection())
             self.activated=True
         else:
             self.synth.stop()
             self.activated=False
         event.Skip()
     
-    def effet1(self, event):  # wxGlade: MyFrame2.<event_handler>
-        if not self.effect[0]:
-            self.synth.addEffect("Disto")
-            self.effect[0]=True
-        else:
-            self.synth.removeEffect(1)
-            self.effect[0]=False
-        event.Skip()
-    def effet2(self, event):  # wxGlade: MyFrame2.<event_handler>
-        print "Event handler 'effet2' not implemented!"
+    def effet1(self, event):
+        self.synth.addEffect("Disto")
+        added=False
+        index = 0
+        while(not added):
+            tmp = "disto" + index
+            if tmp in self.effect :
+                index +=1
+            else:
+                self.effect.append(tmp)
+                added = True
+        print(self.effect)
+
+    def effet2(self, event):
+        
         event.Skip()
 # end of class MyFrame2
 
@@ -86,3 +91,12 @@ def run(synth):
     app.SetTopWindow(frame_3)
     frame_3.Show()
     app.MainLoop()
+    
+
+
+
+
+
+
+
+
