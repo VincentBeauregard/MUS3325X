@@ -26,6 +26,12 @@ effectList = [  ("Disto"),
                 ("STRev"),
                 ("SmoothDelay")
             ]
+instruList = [  ("defaut"),
+                ("sinein"),
+                ("auxin"),
+                ("synthandy"),
+                ("pyotoolsfatbass")
+            ]
 
     
     
@@ -45,7 +51,7 @@ class MyFrame(wx.Frame):
         wx.Frame.__init__(self, *args, **kwds)
         self.start_stop = wx.Button(self, wx.ID_ANY, _("Start/Stop"))
         self.button_2 = wx.Button(self, wx.ID_ANY, _("Play/Pause"))
-        self.instru_box = wx.ComboBox(self, wx.ID_ANY, choices=[_("defaut"), _("sinein")], style=wx.CB_DROPDOWN)
+        self.instru_box = wx.ComboBox(self, wx.ID_ANY, choices=instruList, style=wx.CB_DROPDOWN)
         self.instruSlider = []
         self.instruRadio = []
         self.instruInputBox = []
@@ -487,10 +493,10 @@ class MyFrame(wx.Frame):
             self.slideEffect[i] = (self.parametre[self.inputs[i]])
             if(self.slideEffect[i][4] == -1):
                 self.effectSlider[i].Enable(True)
+                self.effectInputBox[i].Enable(True)
             else:
                 self.effectRadio[i].SetValue(True)
                 self.effectInputBox[i].SetValue(str(self.slideEffect[i][4]))
-            self.effectInputBox[i].Enable(True) 
             self.effectRadio[i].Enable(True)
             self.sizer_effect[i].GetStaticBox().SetLabel(self.inputs[i])
             vals = self.parametre[self.inputs[i]]
@@ -546,12 +552,14 @@ class MyFrame(wx.Frame):
                 self.synth.useCtl(int(self.effectInputBox[x].GetValue()),self.parametre[self.inputs[x]][2],self.parametre[self.inputs[x]][3],self.parametre[self.inputs[x]][0])
                 self.synth.useCtl
                 self.effectSlider[x].Enable(False)
+                self.effectInputBox[x].Enable(False)
                 self.slideEffect[x][4]=int(self.effectInputBox[x].GetValue())
             else:
                 self.effectRadio[x].SetValue(False)
             
         else:
             self.effectSlider[x].Enable(True)
+            self.effectInputBox[x].Enable(True)
             self.effectSlider[x].SetValue(changeRange(0,1,0,127,0.5))
             changeRange(0,1,self.slideEffect[x][2],self.slideEffect[x][3],0.5)
             self.synth.freeCtl(self.slideEffect[x][4])
@@ -593,6 +601,10 @@ class MyFrame(wx.Frame):
 
     def removeEffec(self, event):  # wxGlade: MyFrame.<event_handler>
         if(self.myEffectBox.GetSelection() is not -1):
+            for i in range(8):
+                if(self.effectRadio[i].GetValue()):
+                    self.effectRadio[i].SetValue(False)
+                    self.radio_effect(i)
             self.synth.removeEffect(self.myEffectBox.GetValue())
             self.myEffectBox.SetValue("")
             self.resetEnable()
@@ -602,8 +614,16 @@ class MyFrame(wx.Frame):
                 self.myEffectBox.Append(i)
             self.myEffectBox.SetValue("")
             
+                
         event.Skip()
         
+
+
+
+
+
+
+
     def refreshCtl(self):
         ctl = self.synth.getCtl()
         print(self.ctl)

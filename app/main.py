@@ -9,15 +9,17 @@ import gettext
 import sys
 from pyo import *
 from random import uniform
-
+pm_list_devices()
 sys.path.insert(0, '/home/vincent/Documents/univ/hiver2018/mus3325/git/MUS3325X/app')
 sys.path.insert(0, sys.path[0]+'/GUI')
 sys.path.insert(0, sys.path[1]+'/Instrument')
-sys.path.insert(0, sys.path[2]+'/Effect')
+sys.path.insert(0, sys.path[2]+'/Synth')
+sys.path.insert(0, sys.path[3]+'/Effect')
 import effect
 import gui2
 import instrument
+import synth
 
-a = instrument.Synth(0)
+a = synth.Synth(0)
 gui2.run(a)
 a.exit()
