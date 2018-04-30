@@ -1,6 +1,5 @@
 # Synth - Mus3325 - Mode d'emploie
 
-##Description :
 Projet Dans le cadre du cours MUS3325, il s'agit d'un petit logiciel qui simplifie l'acces a un clavier midi via pyo, permettant d'appliquer different instrument, different effet et en activant le controle de leurs parametres sur le controleur midi du clavier.
 
 ## Ressource utiliser
