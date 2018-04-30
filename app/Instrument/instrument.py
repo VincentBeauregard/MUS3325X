@@ -28,6 +28,9 @@ class Instrument():
         return self
     def sig(self):
         return self.sig
+    def setMul(self,mul):
+        self.sig.setMul(mul)
+        return self.sig
 
 class Defaut(Instrument):
     def __init__(self, note, ctl=[74,71,81,91,16,80,19,2],transpo=2,amp=1):
@@ -43,6 +46,12 @@ class Defaut(Instrument):
         self.lfo = Sine(freq=uniform(.2,.4), mul=0.45, add=0.5)
         self.disto = Disto(self.mix, drive=self.lfo, slope=0.95, mul=.5)
         self.output=self.disto
+    def setMul(self,mul):
+        self.osc1.setMul(mul)
+        self.osc2.setMul(mul)
+        self.osc3.setMul(mul)
+        self.osc4.setMul(mul)
+        return self.sig
         
 class Sinein(Instrument):
     def __init__(self, note, ctl=[74,71,81,91,16,80,19,2],transpo=2,amp=1):
@@ -51,6 +60,10 @@ class Sinein(Instrument):
         self.mix=Mix([self.sine,self.sine],voices=2)
         self.output=self.mix
         self.sig=[self.sine,self.sine]
+    def setMul(self,mul):
+        self.sine.setMul(mul)
+        return self.sig
+        
         
 class AuxIn(Instrument):
     def __init__(self, note, ctl=[74,71,81,91,16,80,19,2],transpo=2,amp=1):
@@ -60,6 +73,9 @@ class AuxIn(Instrument):
         self.mix=Mix([self.harm,self.harm],voices=2)
         self.output=self.mix
         self.sig=[self.harm,self.harm]
+    def setMul(self,mul):
+        self.harm.setMul(mul)
+        return self.sig
 
 class SynthAndy(Instrument):
     def __init__(self, note, ctl=[74,71,81,91,16,80,19,2],transpo=2,amp=1):
@@ -72,6 +88,10 @@ class SynthAndy(Instrument):
         self.rev = STRev(self.stereo, inpos=[0,1], revtime=2, bal=0.25, mul=0.2)
         self.output=self.rev
         self.sig=[self.rev,self.rev]
+    def setMul(self,mul):
+        self.rev.setMul(mul)
+        return self.sig
+
         
 class pyotoolsfatbass(Instrument):
      def __init__(self, note, ctl=[74,71,81,91,16,80,19,2],transpo=2,amp=1):

@@ -9,8 +9,19 @@ from instrument import *
 
 s = Server()
 
+
+
+###Le champ controle indique les controler midi accessible
 ctl = [74,71,81,91,16,80,19,2]
-usedCtl=[[1,7]]
+ctl=[2,3,4,5,6,7,8]
+
+
+
+
+
+
+
+usedCtl=[[1]]
 def ctl_scan(ctlnum,v1):
     if(ctlnum not in ctl and ctlnum not in usedCtl ):
         ctl.append(ctlnum)
@@ -19,15 +30,13 @@ outt=0
 class Synth:
     def __init__(self,input):
         global usedCtl, ctl
-        s.setMidiInputDevice(3)
+        s.setMidiInputDevice(999)
         s.boot()
         self.note = Notein(poly=10, scale=1, first=0, last=127)
         self.ctl = Midictl(1, minscale=0, maxscale=2)
         self.bend = Bendin(brange=2, scale=1)
         self.lf = Sine(freq=5, mul=self.ctl, add=1)
-        self.vol = Midictl(ctlnumber=7, minscale=0, maxscale=2)
-        self.amp = Port(self.vol, .02)
-        self.instrument = Defaut(self.note , transpo = self.lf * self.bend, amp=self.amp)
+        self.instrument = Defaut(self.note , transpo = self.lf * self.bend, amp=1)
         self.a = pyo.CtlScan2(self.ctl_scan)
         self.a.setFunction(ctl_scan)
         self.effects = {}
@@ -35,11 +44,16 @@ class Synth:
         self.midiCtls = {}
         self.ports = {}
         self.out = self.instrument
+        self.amp=1
+        self.masterCtl=[ButLP(self.out.sig, freq=1000, mul=1, add=0.0001)]
+        self.masterCtl.append(ButHP(self.masterCtl[0], freq=1000, mul=1, add=0))
+        self.masterCtl.append(ButBP(self.masterCtl[1], freq=1000, mul=1, add=0))
+        self.masterCtl.append(Pan(self.masterCtl[2], outs=2, pan=0.50, spread=0.50, mul=1, add=0))
     def ctl_scan(ctlnum):
         print("test")
     def start(self,instrument):
         s.start()
-        self.out.out()
+        self.resume()
     def stop(self):
         self.effects = {}
         self.effectOrder = []
@@ -49,30 +63,31 @@ class Synth:
     def exit(self):
         s.stop()
     def pause(self):
-        self.out.stop()
+        self.masterCtl[3].stop()
     def resume(self):
-        self.out.out()
+        self.masterCtl[0].setInput(self.out.sig)
+        self.masterCtl[3].out()
     def addEffect(self,eff,name,pos):
         print(name)
         self.pause()
         if(len(self.effectOrder)==0):#empty
             self.effects[name]=self.setEffect(eff,self.out.sig)                
             self.effectOrder.append(name)
-            self.out = self.effects[name].out()
+            self.out = self.effects[name]
         elif(len(self.effectOrder)==pos):#add last
-            self.effects[name]=self.setEffect(eff,self.effects[self.effectOrder[len(self.effectOrder)-1]].effect)                
+            self.effects[name]=self.setEffect(eff,self.effects[self.effectOrder[len(self.effectOrder)-1]].sig)                
             self.effectOrder.append(name)
-            self.out = self.effects[name].out()
+            self.out = self.effects[name]
         elif(pos==0):#add first
             self.effects[name]=self.setEffect(eff,self.instrument.sig)         
             self.effectOrder.insert(pos,name)
-            self.effects[self.effectOrder[pos+1]].effect.setInput(self.effects[name].effect)   
-            self.out = self.effects[self.effectOrder[len(self.effectOrder)-1]].out()
+            self.effects[self.effectOrder[pos+1]].sig.setInput(self.effects[name].sig)   
+            self.out = self.effects[self.effectOrder[len(self.effectOrder)-1]]
         elif(pos > 0 and pos < len(self.effectOrder)):
-            self.effects[name]=self.setEffect(eff,self.effects[self.effectOrder[pos-1]].effect)          
+            self.effects[name]=self.setEffect(eff,self.effects[self.effectOrder[pos-1]].sig)          
             self.effectOrder.insert(pos,name)
-            self.effects[self.effectOrder[pos+1]].effect.setInput(self.effects[name].effect)  
-            self.out = self.effects[self.effectOrder[len(self.effectOrder)-1]].out()
+            self.effects[self.effectOrder[pos+1]].effect.setInput(self.effects[name].sig)  
+            self.out = self.effects[self.effectOrder[len(self.effectOrder)-1]]
         self.resume()
 
 
@@ -120,7 +135,7 @@ class Synth:
             self.effects.pop(name)                
             self.effectOrder.remove(name)
         elif(index > 0 and index < len(self.effectOrder)):
-            self.effects[self.effectOrder[index+1]].effect.setInput(self.effects[self.effectOrder[index-1]].effect)  
+            self.effects[self.effectOrder[index+1]].effect.setInput(self.effects[self.effectOrder[index-1]].sig)  
             self.effects.pop(name)                
             self.effectOrder.remove(name)
         self.resume()
