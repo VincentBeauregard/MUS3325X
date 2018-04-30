@@ -1,8 +1,8 @@
 # Synth - Mus3325 - Mode d'emploie
 
-Projet Dans le cadre du cours MUS3325, il s'agit d'un petit logiciel qui simplifie l'acces a un clavier midi via pyo, permettant d'appliquer different instrument, different effet et en activant le controle de leurs parametres sur le controleur midi du clavier.
+Projet dans le cadre du cours MUS3325, il s'agit d'un petit logiciel qui simplifie l'accès à un clavier midi via pyo, permettant d'appliquer différents instruments, différents effets et en activant les controles de leurs paramètres sur les controleurs midi du clavier.
 
-## Ressource utiliser
+### Ressource utiliser
 python 2
 debian 9 - Stretch
 les librairie python :
@@ -11,70 +11,75 @@ les librairie python :
 
 ### Installation
 
-Assurez-vous d'ajuster les PATH dans les fichier main.py et Synth/synth.py.
-main.py devrait importer les fichier Synth/synth.py et GUI/gui.py
-Synth/synth.py devrait importer les fichier Synth/Instrument/instrument.py et Synth/Effect/effect.py
+Assurez-vous d'ajuster les PATH dans les fichiers main.py et Synth/synth.py.
+main.py devrait importer les fichiers Synth/synth.py et GUI/gui2.py.
+Synth/synth.py devrait importer les fichiers Synth/Instrument/instrument.py et Synth/Effect/effect.py
 
-Si vous demarrez via E-Pyo sur un ordinateur sous linux, le chemin ne devrait que legerement differer.
+Si vous demarrez via E-Pyo sur un ordinateur sous linux, le chemin ne devrait que légèrement différer.
 
-Ajustez les controleur recquis si vous les connaissez dans Synth/synth.py, par defaut NULL
+Ajustez les controleurs recquis si vous les connaissez déjà dans Synth/synth.py. par defaut :
+* NULL
 
 
-## Demarrage
+##/ Demarrage
 
-Pour demarrer, simplement activer le fichier main.py et appuyer sur le bouton 
-'''
+Pour démarrer, simplement exécuter le fichier main.py et appuyer sur le bouton 
+
+```
 Start/Stop
-'''
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
 ```
 
-### And coding style tests
+### Ce que ca fait
 
-Explain what these tests test and why
+Le bouton 
 
 ```
-Give an example
+Pause/Resume
 ```
 
-## Deployment
+permet de mettre en pause l'exécution de la sortie. 
 
-Add additional notes about how to deploy this on a live system
+Le menu défilant qui se trouve juste en dessous permet de sélectionner à tout moment la source primaire.
 
-## Built With
+Juste en dessous, on trouve les controles generaux : le volume d'entrée, le volume de sortie, et 3 filtres: un passe haut un passe bas et un passe bande.
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+En dessous,encore une fois, un controleur stereo.
 
-## Contributing
+Chaque controle fonctionne de la facon suivante : un slider pour selectionner la valeur désirée, un menue défilant pour choisir un controleur à assigner et un checkbox pour indiquer si oui ou non il est assigné.
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Le bouton
+```
+Refresh inputs
+```
+qui se trouve en dessous permet de recuperer les inputs ajouter apres l'ouverture de l'application. Si vous ne connaissez pas vos controleurs MIDIs, une fois demarré, vous devrez les deplacer pour qu'il senregistre, puis vous pourrez les reccuperer en appyant sur ce bouton.
 
-## Versioning
+Au centre ce trouvent les controles d'ajout d'effet.
+Vous devez d'abord selectionner un effet dans le menu défilant. Par la suite, si vous voulez donner un nom personnalisé a l'effet, vous pouvez l'indiquer dans la section name. Ensuite, si cet effet n'est pas le premier que vous ajoutez, vous avez le choix entre : 
+*L'ajouter comme premier effet, soit juste apres la source
+*L'ajouter comme dernier effet, soit juste avant la sortie
+*L'ajouter entre deux autres effets en position i en selectionnant sa position avec 0 étant le plus près de la source 
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+Finalement, pour chacun des effets que vous aurez ajoutés, il vous sera possible de modifier leur paramtre ou de leur assigner un controleur MIDI via l'onglet MyEffect. En selectionnant l'un des effets dans le menue défilant, le paramèètre disponnible s'affiche. En tout temps, il vous sera possible de retirer un effet non desirez en appuyant sur le bouton
+```
+Remove
+```
 
 
+###Fichier necessaire
+
+Les fichiers : 
+	*main.py
+	*GUI/gui2.py
+	*Synth/synth.py
+	*Synth/Instrument/instrument.py
+	*Synth/Effect/effect.py
+
+###info
+
+Vous pouvez me contacter via mon couriel 
+vincent.g.beauregard@umontreal.ca
+ou
+vincentgb48@hotmail.ca
+
+Vincent G. Beauregard
+Matricule : 20034236
