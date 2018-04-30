@@ -68,7 +68,7 @@ Remove
 L'effet selectionner sera l'effet supprimé.
 
 
-# Fichier necessaire
+### Fichier necessaire
 
 Les fichiers : 
 * main.py
@@ -78,7 +78,7 @@ Les fichiers :
 * Synth/Effect/effect.py
 
 
-###info
+### info
 
 Vous pouvez me contacter via mon couriel 
 vincent.g.beauregard@umontreal.ca
