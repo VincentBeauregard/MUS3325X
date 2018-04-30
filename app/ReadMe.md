@@ -6,8 +6,8 @@ Projet dans le cadre du cours MUS3325, il s'agit d'un petit logiciel qui simplif
 python 2
 debian 9 - Stretch
 les librairie python :
-	pyo
-	WxPython
+*	pyo
+*	WxPython
 
 ### Installation
 
@@ -17,11 +17,10 @@ Synth/synth.py devrait importer les fichiers Synth/Instrument/instrument.py et S
 
 Si vous demarrez via E-Pyo sur un ordinateur sous linux, le chemin ne devrait que légèrement différer.
 
-Ajustez les controleurs recquis si vous les connaissez déjà dans Synth/synth.py. par defaut :
-* NULL
+Ajustez les controleurs recquis si vous les connaissez déjà dans Synth/synth.py. par defaut , l'ensemble est vide.
 
 
-##/ Demarrage
+## Demarrage
 
 Pour démarrer, simplement exécuter le fichier main.py et appuyer sur le bouton 
 
@@ -55,24 +54,29 @@ qui se trouve en dessous permet de recuperer les inputs ajouter apres l'ouvertur
 
 Au centre ce trouvent les controles d'ajout d'effet.
 Vous devez d'abord selectionner un effet dans le menu défilant. Par la suite, si vous voulez donner un nom personnalisé a l'effet, vous pouvez l'indiquer dans la section name. Ensuite, si cet effet n'est pas le premier que vous ajoutez, vous avez le choix entre : 
-*L'ajouter comme premier effet, soit juste apres la source
-*L'ajouter comme dernier effet, soit juste avant la sortie
-*L'ajouter entre deux autres effets en position i en selectionnant sa position avec 0 étant le plus près de la source 
+
+* L'ajouter comme premier effet, soit juste apres la source
+* L'ajouter comme dernier effet, soit juste avant la sortie
+* L'ajouter entre deux autres effets en position i en selectionnant sa position avec 0 étant le plus près de la source 
 
 Finalement, pour chacun des effets que vous aurez ajoutés, il vous sera possible de modifier leur paramtre ou de leur assigner un controleur MIDI via l'onglet MyEffect. En selectionnant l'un des effets dans le menue défilant, le paramèètre disponnible s'affiche. En tout temps, il vous sera possible de retirer un effet non desirez en appuyant sur le bouton
+
 ```
 Remove
 ```
 
+L'effet selectionner sera l'effet supprimé.
 
-###Fichier necessaire
+
+# Fichier necessaire
 
 Les fichiers : 
-	*main.py
-	*GUI/gui2.py
-	*Synth/synth.py
-	*Synth/Instrument/instrument.py
-	*Synth/Effect/effect.py
+* main.py
+* GUI/gui2.py
+* Synth/synth.py
+* Synth/Instrument/instrument.py
+* Synth/Effect/effect.py
+
 
 ###info
 
