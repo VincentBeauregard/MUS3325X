@@ -10,14 +10,15 @@ import sys
 from pyo import *
 from random import uniform
 pm_list_devices()
+
+###Changer la lignes suivante en fonction de la position dans votre machine
 sys.path.insert(0, '/home/vincent/Documents/univ/hiver2018/mus3325/git/MUS3325X/app')
+####
+
+
 sys.path.insert(0, sys.path[0]+'/GUI')
-sys.path.insert(0, sys.path[1]+'/Instrument')
-sys.path.insert(0, sys.path[2]+'/Synth')
-sys.path.insert(0, sys.path[3]+'/Effect')
-import effect
+sys.path.insert(0, sys.path[1]+'/Synth')
 import gui2
-import instrument
 import synth
 
 a = synth.Synth(0)

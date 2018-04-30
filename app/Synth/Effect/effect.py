@@ -1,4 +1,8 @@
 from pyo import *
+
+        ### La classe parente Effect reuni une majorite des parametre et fonction disponible pour les effet disponible
+        ### on y retrouve la liste dispnnible a la page http://ajaxsoundstudio.com/pyodoc/api/classes/effects.html
+
 class Effect():
     def __init__(self, sigFreq):
         self.sigFreq=sigFreq        

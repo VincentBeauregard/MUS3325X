@@ -2,12 +2,8 @@ from pyo import *
 from pyotools import *
 import pyo
 from random import uniform
-sys.path.insert(0, '/home/vincent/Documents/univ/hiver2018/mus3325/git/MUS3325X/app/Effect')
-import effect
-sys.path.insert(0, '/home/vincent/Documents/univ/hiver2018/mus3325/git/MUS3325X/app/Instrument')
-import instrument
 
-        
+        ### La classe parente instrument reuni une majorite des parametre et fonction disponible pour les instrument disponible
 class Instrument():
     def __init__(self,note,ctl,transpo,amp):
         self.ctl=ctl
